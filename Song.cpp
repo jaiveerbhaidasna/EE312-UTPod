@@ -6,40 +6,49 @@
 
 using namespace std;
 
-    Song::Song(string t, string a, int sz) {
-        title = t;
+    Song::Song(string a, string t, int sz) {
         artist = a;
+        title = t;
         size = sz;
-    }
-
-    string Song::getTitle() const {
-        return title;
     }
 
     string Song::getArtist() const {
         return artist;
     }
 
-    int Song::getSize() const {
-        return size;
+    string Song::getTitle() const {
+        return title;
     }
 
-    void Song::setTitle(string t) {
-        title = t;
+    int Song::getSize() const {
+        return size;
     }
 
     void Song::setArtist(string a) {
         artist = a;
     }
 
+    void Song::setTitle(string t) {
+        title = t;
+    }
+
     void Song::setSize(int sz) {
         size = sz;
     }
 
+    //Function that is called by an object of the Song class, that swaps the contest of the caller and a second Song
+    void Song::swap(Song &rhs){
+        Song temp = rhs;
+        rhs = *this;
+        *this = temp;
+    }
+
+    //Checks if all fields of two Songs are exactly equal
     bool Song::operator ==(Song const &rhs) {
         return (title == rhs.title && artist == rhs.artist && size == rhs.size);
     }
 
+    //Checks if the caller song is greater than the parameter Song, by first comparing artists, then titles, then size
     bool Song::operator >(Song const &rhs) {
         if(artist > rhs.artist)
             return true;
@@ -60,6 +69,7 @@ using namespace std;
                 return false;
     }
 
+    //Checks if the caller song is lesser than the parameter Song, by first comparing artists, then titles, then size
     bool Song::operator <(Song const &rhs){
         if(artist < rhs.artist)
             return true;
@@ -80,10 +90,7 @@ using namespace std;
                 return false;
     }
 
-    Song::~Song() {
-
-    }
-
+    //Prints a song by first printing title, then artist, then size
     ostream& operator << (ostream& out, const Song &s)
     {
         out << s.getTitle() << " - " << s.getArtist() << " (" << s.getSize() << " MB)";

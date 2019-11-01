@@ -8,6 +8,8 @@
 
 using namespace std;
 
+    //Default constructor, seeds random number generator, initializes SongNode head pointer, initializes UtPod size to
+    //max memory
     UtPod::UtPod(){
         unsigned int currentTime =  (unsigned)time(0);
         srand(currentTime);
@@ -15,6 +17,8 @@ using namespace std;
         songs = NULL;
     }
 
+    //Default constructor, seeds random number generator, initializes SongNode head pointer, initializes UtPod size to
+    //input size parameter
     UtPod::UtPod(int size){
         unsigned int currentTime =  (unsigned)time(0);
         srand(currentTime);
@@ -25,6 +29,8 @@ using namespace std;
         songs = NULL;
     }
 
+    //Method add song, inputs a given song and adds it to the UtPod linked list if enough size remaining, returns an
+    //error code otherwise
     int UtPod::addSong(Song const &s){
 
         if(s.getSize() < getRemainingMemory()){
@@ -38,39 +44,41 @@ using namespace std;
         return NO_MEMORY;
     }
 
+    //Method remove song, inputs a given song and removes the first instance from the UtPod linked list if found,
+    //returns an error code otherwise
     int UtPod::removeSong(Song const &s) {
         SongNode *prev = NULL;
         SongNode *ptr = songs;
         bool found = false;
 
-        while(ptr != NULL && !found){
-            if(ptr->s == s){
-                found = true;
-            }
-            else
-            {
-                prev = ptr;
-                ptr = ptr->next;
-            }
-        }
-
-        if(prev == NULL)
+        if(ptr != NULL)
         {
-            songs = ptr->next;
-            delete ptr;
-            return SUCCESS;
-        }
+            while (ptr != NULL && !found) {
+                if (ptr->s == s) {
+                    found = true;
+                } else {
+                    prev = ptr;
+                    ptr = ptr->next;
+                }
+            }
 
-        if(found)
-        {
-            prev->next = ptr->next;
-            delete ptr;
-            return SUCCESS;
-        }
+            if (prev == NULL) {
+                songs = ptr->next;
+                delete ptr;
+                return SUCCESS;
+            }
 
+            if (found) {
+                prev->next = ptr->next;
+                delete ptr;
+                return SUCCESS;
+            }
+        }
         return NOT_FOUND;
     }
 
+    //Method shuffle, takes the linked list of songs in a given UtPod and randomly shuffles them using swaps and a
+    //random number generator
     void UtPod::shuffle() {
         int numSongs = 0;
         int rand1 = 0, rand2 = 0;
@@ -83,7 +91,7 @@ using namespace std;
         }
 
         if(numSongs >= 2){
-            for(int x = 0; x < numSongs * 2; x++)
+            for(int x = 0; x < numSongs * 5; x++)
             {
                 rand1 = (rand() % numSongs);
                 rand2 = (rand() % numSongs);
@@ -95,19 +103,15 @@ using namespace std;
                 for(int z = 0; z < rand2; z++)
                     ind2 = ind2->next;
 
-                swap(ind1->s,ind2->s);
+                ind1->s.swap(ind2->s);
             }
         }
 
 
     }
 
-    void swap(Song &s1, Song &s2) {
-        Song temp = s1;
-        s1 = s2;
-        s2 = temp;
-    }
-
+    //Method sort, takes the given UtPod song linked list and selection sorts until the list is ordered by artist, then
+    //then title, then size
     void UtPod::sortSongList() {
         SongNode *index = songs;
 
@@ -121,11 +125,12 @@ using namespace std;
                     lowest = current;
                 current = current->next;
             }
-            swap(index->s,lowest->s);
+            index->s.swap(lowest->s);
             index = index->next;
         }
     }
 
+    //Method show, prints the linked list of songs to the console starting at the head
     void UtPod::showSongList() {
         SongNode *temp = songs;
 
@@ -133,8 +138,10 @@ using namespace std;
             cout << temp->s << endl;
             temp = temp->next;
         }
+        cout << "\n";
     }
 
+    //Method clear memory, takes the linked list of songs in the UtPod and clears it until is empty
     void UtPod::clearMemory() {
         SongNode *prev = NULL;
 
@@ -146,6 +153,8 @@ using namespace std;
         }
     }
 
+    //Method getRemainingMemory, takes the total memory of the given UtPod and subtracts the total memory of the
+    //songs in the list to return remaining free memory
     int UtPod::getRemainingMemory() {
         SongNode *temp = songs;
         int memoryUsed = 0;
@@ -158,6 +167,7 @@ using namespace std;
         return memSize - memoryUsed;
     }
 
+    //Destructor for the UtPod class, just clears the memory taken by the UtPod
     UtPod::~UtPod(){
         clearMemory();
     }
